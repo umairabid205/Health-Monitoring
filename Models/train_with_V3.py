@@ -2,56 +2,38 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
+import numpy as np
+import pandas as pd
 import torch.nn as nn
 import torch.optim as optim 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score , precision_score , recall_score , f1_score
 from torch.utils.data import DataLoader, TensorDataset
 
-# Import the model (assuming Models/models.py has HybridModel class)
-# at the top of your file
+# Import the model 
+
 import sys
 import os
-
 
 # Go two levels up from this file to reach project root
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.append(project_root)
 
+from Models.models import HybridModel 
 
-from Models.models import HybridModel  # adjust path if needed
+#reload from numpy
+data = np.load("Data/Processed/Training_Prepared_Data/V3_resampled_dataset.npz")
 
-# ==== Choose dataset for test ====
+X3 = data["X"]
+y3 = data["y"]
 
-import numpy as np
-import pandas as pd
-
-
-#load
-
-v2_data = np.load("Data/Processed/Training_Prepared_Data/V2_dataset.npz")
-X2 = v2_data["X"]
-y2 = v2_data["y"]
-
-#convert to tensors
-X = torch.tensor(X2, dtype=torch.float32)
-y = torch.tensor(y2, dtype=torch.long)
+X= torch.tensor(X3, dtype=torch.float32)
+y= torch.tensor(y3, dtype=torch.long)
 
 
 #Split 
-X_train, X_temp , y_train ,y_temp = train_test_split(X, y , test_size = 0.2 , stratify=y , random_state = 42)
-
-#Split
-X_val , X_test , y_val , y_test = train_test_split(X_temp , y_temp , test_size = 0.5 , random_state=42 , stratify=y_temp)
-
-
-# Save test data in compressed npz format
-np.savez_compressed(
-    "Data/Processed/Testing_Prepared_Data/V2_featured_test.npz",
-    X_test=X_test.numpy(),
-    y_test=y_test.numpy()
-)
+X_train, X_val , y_train ,y_val = train_test_split(X, y , test_size = 0.2 , stratify=y , random_state = 42)
 
 # Create DataLoader with TesorDataset
 batch_size = 8
@@ -176,15 +158,9 @@ def train_with_early_stopping(model, train_loader, val_loader , device , epochs 
 
 
 
-# model = HybridModel(input_channels=1, cnn_channels=32, lstm_hidden=64, lstm_layers=1, num_classes=4).to(device)
 train_with_early_stopping(model, train_loader, val_loader, device, epochs=50, patience=7)
 
-#saving the model with V1 Dataset Version
-
-#uncomment the one you trained the model .
-torch.save(model.state_dict() , "Models/Trained_models/V2_model.pth") # Acc: 0.9776
-# torch.save(model.state_dict() , "Models/Trained_models/V2_model.pth") #Acc: 0.9291
-
+torch.save(model.state_dict() , "Models/Trained_models/V3_model.pth")
 
 
 
