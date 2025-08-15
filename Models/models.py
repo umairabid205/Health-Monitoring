@@ -29,7 +29,7 @@ class HybridModel(nn.Module):
         )
         
         # LSTM for sequence modeling
-        self.lstm = nn.LSTM(input_size=32, hidden_size=lstm_hidden, num_layers=lstm_layers,
+        self.lstm = nn.LSTM(input_size=cnn_channels, hidden_size=lstm_hidden, num_layers=lstm_layers,
                             batch_first=True, bidirectional=True)
         
         # Attention

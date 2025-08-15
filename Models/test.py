@@ -20,10 +20,14 @@ from Models.models import HybridModel
 X_test = np.load("Data/Processed/X3_test_features.npy") 
 y_test = np.load("Data/Processed/y3_test_labels.npy")
 
+data = np.load("Data\Processed\Testing_Prepared_Data\V3_test_resampled.npz")
+X= data["X"]
+y= data["y"]
+
 
 # Convert to torch tensors
-X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
-y_test_tensor = torch.tensor(y_test, dtype=torch.long)
+X_test_tensor = torch.tensor(X, dtype=torch.float32)
+y_test_tensor = torch.tensor(y, dtype=torch.long)
 
 
 
