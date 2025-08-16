@@ -17,12 +17,11 @@ from Models.models import HybridModel
 
 
 # Load test data
-X_test = np.load("Data/Processed/X3_test_features.npy") 
-y_test = np.load("Data/Processed/y3_test_labels.npy")
 
-data = np.load("Data\Processed\Testing_Prepared_Data\V3_test_resampled.npz")
-X= data["X"]
-y= data["y"]
+data = np.load("Data\Processed\Testing_Prepared_Data\V2_featured_test.npz")
+X= data["X_test"]
+y= data["y_test"]
+
 
 
 # Convert to torch tensors
@@ -36,17 +35,16 @@ y_test_tensor = torch.tensor(y, dtype=torch.long)
 # ==== Model Run ====
 
 model = HybridModel(
-    input_channels=X_test_tensor.shape[2],  # channels
-    cnn_channels=32,
-    lstm_hidden=64,
-    lstm_layers=1,
-    num_classes=len(torch.unique(y_test_tensor))
-)  # pass the same arguments used in training
-
+    input_channels=19,
+    cnn_channels=64,
+    lstm_hidden=128,
+    lstm_layers=3,
+    num_classes=4
+)# pass the best parameters from optuna used in train
 
 
 # Load the saved state_dict
-model.load_state_dict(torch.load("Models\Trained_models\V3_model.pth"))
+model.load_state_dict(torch.load("Models/Trained_models/V2_Best_model.pth"))
 model.eval()
 
 

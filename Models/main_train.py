@@ -63,12 +63,19 @@ val_loader = DataLoader(val_dataset , batch_size=batch_size , shuffle=False)
 
 # ==== Model Run ====
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+
+# Best Params: {'cnn_channels': 32, 'lstm_hidden': 32, 'lstm_layers': 2, 'lr': 0.00017366050532753203, 'batch_size': 16}
+# Best CV Accuracy: 0.9604505037737048s
+
+
 model = HybridModel(
-    input_channels=X.shape[2],  # channels
+    input_channels=19,
     cnn_channels=32,
-    lstm_hidden=64,
-    lstm_layers=1,
-    num_classes=len(torch.unique(y))
+    lstm_hidden=32,
+    lstm_layers=2,
+    num_classes=4
 ).to(device)
 
 
@@ -99,7 +106,7 @@ class EarlyStopping:
 def train_with_early_stopping(model, train_loader, val_loader , device , epochs = 50 , patience=5):
     
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.00017)
     early_stopper = EarlyStopping(patience=patience)
     
     
@@ -182,7 +189,7 @@ train_with_early_stopping(model, train_loader, val_loader, device, epochs=50, pa
 #saving the model with V1 Dataset Version
 
 #uncomment the one you trained the model .
-torch.save(model.state_dict() , "Models/Trained_models/V2_model.pth") # Acc: 0.9776
+torch.save(model.state_dict() , "Models/Trained_models/V2_Best_model.pth") # Acc: 0.9776
 # torch.save(model.state_dict() , "Models/Trained_models/V2_model.pth") #Acc: 0.9291
 
 

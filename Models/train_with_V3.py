@@ -46,13 +46,12 @@ val_loader = DataLoader(val_dataset , batch_size=batch_size , shuffle=False)
 # ==== Model Run ====
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = HybridModel(
-    input_channels=X.shape[2],  # channels
-    cnn_channels=32,
-    lstm_hidden=64,
-    lstm_layers=1,
-    num_classes=len(torch.unique(y))
+    input_channels=19,
+    cnn_channels=64,
+    lstm_hidden=128,
+    lstm_layers=3,
+    num_classes=4
 ).to(device)
-
 
 # Early Stopping Helper
 class EarlyStopping:
